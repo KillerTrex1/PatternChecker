@@ -62,7 +62,7 @@ public class PatternChecker {
             
         }
         PrintPatterns(ThreadedPatternCounter.pats);
-        
+        System.out.println("test");
     }
     public static void PrintPatterns(ArrayList <Pattern> pats){
         int sum = 0;
