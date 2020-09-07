@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class NoThreadPatternCounter {
     ArrayList <Pattern> pats;
-    
+    ArrayList <RuntimeCPUUsage> RCUs = new ArrayList();
     
     public NoThreadPatternCounter(){
         pats = new ArrayList();
@@ -27,6 +27,7 @@ public class NoThreadPatternCounter {
         }
     }
     public void checkPatterns(String p){
+        //RCUs.add(new RuntimeCPUUsage());
         Boolean newP = true;
         for(int i = 0;i<pats.size();i++){
             if (pats.get(i).pattern.equals(p)){

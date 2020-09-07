@@ -114,7 +114,7 @@ public class ParallelMergeSort {
       
         Random rand = new Random();   
         
-        int [] nums = new int[105760];
+        int [] nums = new int[105600];
         
         for (int x = 0; x < nums.length; x++){
             nums[x] = rand.nextInt(1000000000);

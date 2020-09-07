@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class MergeSort {
 
-   private int[] nums;
+        private int[] nums;
       private int[] tempArray;
       
       public MergeSort(int[] nums){

@@ -22,6 +22,7 @@ public class ThreadedPatternCounter extends Thread{
     public int endRange;
     static public ArrayList <Sheet> sheets;
     static public ArrayList <Pattern> pats = new ArrayList();
+    static public ArrayList <RuntimeCPUUsage> RCUs = new ArrayList();
     public ThreadedPatternCounter(Semaphore sem, String threadName, int startRange, int endRange)  
     { 
         super(threadName); 
@@ -64,6 +65,7 @@ public class ThreadedPatternCounter extends Thread{
     
     
     public void checkPatterns(String p){
+        //RCUs.add(new RuntimeCPUUsage());
         Boolean newP = true;
         for(int i = 0;i<pats.size();i++){
             if (pats.get(i).pattern.equals(p)){
