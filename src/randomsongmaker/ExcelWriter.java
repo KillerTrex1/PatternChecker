@@ -11,6 +11,7 @@ package randomsongmaker;
  */
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -21,24 +22,19 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelWriter {
-    public ExcelWriter(){
+
+    public static void sample(){
+        for(int i = 0;i<20;i++){
+            System.out.println(generateSong("",0,true));
+        }
+    }
+    public static void WriteSheetToExel(int count,int countNote){
         XSSFWorkbook workbook = new XSSFWorkbook(); 
   
         // Create a blank sheet 
         XSSFSheet sheet = workbook.createSheet("DATA"); 
-  
-        // This data needs to be written (Object[]) 
-        //Map<String, Object[]> data = new TreeMap<String, Object[]>(); 
-        //data.put("1", new Object[]{ "ID", "NAME", "LASTNAME" }); 
-        //data.put("2", new Object[]{ 1, "Pankaj", "Kumar" }); 
-        //data.put("3", new Object[]{ 2, "Prakashni", "Yadav" }); 
-        //data.put("4", new Object[]{ 3, "Ayan", "Mondal" }); 
-        //data.put("5", new Object[]{ 4, "Virat", "kohli" }); 
-  
-        // Iterate over data and write to sheet 
-        //Set<String> keyset = data.keySet(); 
-        //int rownum = 0; 
-        for (int rownum = 0;rownum<5000;rownum++){
+
+        for (int rownum = 0;rownum<count;rownum++){
             Row row = sheet.createRow(rownum);
             
             Cell cell = row.createCell(0); 
@@ -46,7 +42,13 @@ public class ExcelWriter {
             cell.setCellValue(firstVal);
             int cellnum = 1;
             for (cellnum = 1;cellnum<21;cellnum++){
-                String randomPattern = generateSongWithRests("",0);
+                String randomPattern;
+                if (rownum < countNote){
+                    randomPattern = generateSong("",0,false);
+                }else{
+                    randomPattern = generateSong("",0,true);
+                }
+                    
                 cell = row.createCell(cellnum); 
                 cell.setCellValue(randomPattern);
             }
@@ -54,123 +56,162 @@ public class ExcelWriter {
         for (int i=0;i<21;i++){
             sheet.autoSizeColumn(i);
         }
-        
-        /*
-        for (String key : keyset) { 
-            // this creates a new row in the sheet 
-            Row row = sheet.createRow(rownum++); 
-            Object[] objArr = data.get(key); 
-            int cellnum = 0; 
-            for (Object obj : objArr) { 
-                // this line creates a cell in the next column of that row 
-                Cell cell = row.createCell(cellnum++); 
-                if (obj instanceof String) 
-                    cell.setCellValue((String)obj); 
-                else if (obj instanceof Integer) 
-                    cell.setCellValue((Integer)obj); 
-            } 
-        } 
-        */
+
         try { 
             // this Writes the workbook gfgcontribute 
             FileOutputStream out = new FileOutputStream(new File("data.xlsx")); 
             workbook.write(out); 
             out.close(); 
-            System.out.println("gfgcontribute.xlsx written successfully on disk."); 
+            System.out.println("data.xlsx written successfully on disk."); 
         } 
         catch (Exception e) { 
             e.printStackTrace(); 
+        }  
+    }
+    public static void WritePatternToExel(ArrayList <Pattern> pats){
+        XSSFWorkbook workbook = new XSSFWorkbook(); 
+  
+        // Create a blank sheet 
+        XSSFSheet sheet = workbook.createSheet("Pattterns"); 
+
+        for (int rownum = 0;rownum<pats.size();rownum++){
+            Row row = sheet.createRow(rownum);
+            
+            Cell cell = row.createCell(0); 
+            cell.setCellValue(pats.get(rownum).pattern);
+            Cell cell2 = row.createCell(1); 
+            cell2.setCellValue(pats.get(rownum).ctr);
+ 
+        }
+        for (int i=0;i<2;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        try { 
+            // this Writes the workbook gfgcontribute 
+            FileOutputStream out = new FileOutputStream(new File("patterns.xlsx")); 
+            workbook.write(out); 
+            out.close(); 
+            System.out.println("pattern.xlsx written successfully on disk."); 
         } 
-        
+        catch (Exception e) { 
+            e.printStackTrace(); 
+        }  
     }
-    public static String generateSong(String curPattern,int noteVal){
+    public static String generateSong(String curPattern,int noteVal,Boolean hasRest){
         //System.out.println("NOTE: "+noteVal);
-        int max = ((8-noteVal)/2);
-        //System.out.println("MAX: "+max);
-        int val = 0;
-        //System.out.println(max);
-        if (max>0){
-            Random rand = new Random();
-            val = rand.nextInt(max);
-        }
-        //Random rand = new Random();
-        
-        switch(val){
-            case 3:
-                curPattern= curPattern+"W ";
-                noteVal+=8;
-                break;
-            case 2:
-                curPattern= curPattern+"H ";
-                noteVal+=4;
-                break;
-            case 1:
-                curPattern= curPattern+"Q ";
-                noteVal+=2;
-                break;
-            default:
-                curPattern= curPattern+"E ";
-                noteVal+=1;
-                break;
-        }
-        
-        if (noteVal==8){
-            return curPattern;
-        }else{
-            return generateSong(curPattern,noteVal);
-        }
-    }
-    public static String generateSongWithRests(String curPattern,int noteVal){
-        //System.out.println("NOTE: "+noteVal);
-        int max = ((8-noteVal)/2);
+        int max = ((16-noteVal));
         //System.out.println("MAX: "+max);
         int val = 0;
         //System.out.println(max);
         Random rand = new Random();
-        if (max>0){
-            
-            val = rand.nextInt(max);
+        if (max == 16){
+            //whole3
+            val = RandomNoteWithWeights(3);
+        }else if (max >=8){
+            //half2
+            val = RandomNoteWithWeights(2);
+        }else if (max >=4){
+            //quarter1
+            val = RandomNoteWithWeights(1);
+        }else if (max >=2){
+            //eight0
+            val = RandomNoteWithWeights(0);
+        }else{
+            val = 0;
+        }
+        int val2 = 0;
+        if (hasRest){
+            val2 = rand.nextInt(2);
         }
         
-        int val2 = rand.nextInt(2);
         
         //Random rand = new Random();
         
         switch(val){
+            case 4:
+                if (val2==0)
+                    curPattern= curPattern+"W";
+                else
+                    curPattern= curPattern+"Wr";
+                noteVal+=16;
+                break;
             case 3:
                 if (val2==0)
-                    curPattern= curPattern+"W ";
+                    curPattern= curPattern+"H";
                 else
-                    curPattern= curPattern+"WR ";
+                    curPattern= curPattern+"Hr";
                 noteVal+=8;
                 break;
             case 2:
                 if (val2==0)
-                    curPattern= curPattern+"H ";
+                    curPattern= curPattern+"Q";
                 else
-                    curPattern= curPattern+"HR ";
+                    curPattern= curPattern+"Qr";
                 noteVal+=4;
                 break;
             case 1:
                 if (val2==0)
-                    curPattern= curPattern+"Q ";
+                    curPattern= curPattern+"E";
                 else
-                    curPattern= curPattern+"QR ";
+                    curPattern= curPattern+"Er";
                 noteVal+=2;
                 break;
             default:
                 if (val2==0)
-                    curPattern= curPattern+"E ";
+                    curPattern= curPattern+"S";
                 else
-                    curPattern= curPattern+"ER ";
+                    curPattern= curPattern+"Sr";
                 noteVal+=1;
                 break;
         }
         
-        if (noteVal==8){
+        if (noteVal==16){
             return curPattern;
         }else{
-            return generateSongWithRests(curPattern,noteVal);
+            return generateSong(curPattern,noteVal,hasRest);
+        }
+    }
+    public static int RandomNoteWithWeights(int max){
+        Random rand = new Random();
+        int x = rand.nextInt(100);
+        switch(max){
+            case 3:
+                if (x<10){
+                    return 4;
+                }else if(x<25){
+                    return 3;
+                }else if(x<45){
+                    return 2;
+                }else if(x<70){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            case 2:
+                if (x<10){
+                    return 3;
+                }else if(x<30){
+                    return 2;
+                }else if(x<60){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            case 1:
+               if (x<25){
+                    return 2;
+                }else if(x<60){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            default:
+                if (x<50){
+                    return 1;
+                }else{
+                    return 0;
+                }
         }
     }
 }

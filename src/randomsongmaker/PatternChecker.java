@@ -32,37 +32,54 @@ public class PatternChecker {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException,InterruptedException {
+        int COUNT = 30000;
+        int THREADCOUNT = 8;
+        int COUNTNOTE = 20000;
+        //WRITE DATA
+        
+        //ExcelWriter.WriteSheetToExel(COUNT,COUNTNOTE);
+        
+        
+        //READ DATA
         ExcelReader ex = new ExcelReader("data.xlsx");
         ArrayList <Sheet> pat = ex.ReadData();
+        long startTimeParallel = System.currentTimeMillis();
+        
         /*
-        NO THREADS
+        //NO THREADS
         NoThreadPatternCounter pc = new NoThreadPatternCounter();
         pc.manualCount(pat);
+        long endTimeParallel = System.currentTimeMillis();
         PrintPatterns(pc.pats);
+        ExcelWriter.WritePatternToExel(pc.pats);
         */
-        Semaphore sem = new Semaphore(1);
-        ThreadedPatternCounter mt1 = new ThreadedPatternCounter(sem,"A",0,1000,pat); 
-        ThreadedPatternCounter mt2 = new ThreadedPatternCounter(sem, "B",1000,2000,pat);
-        ThreadedPatternCounter mt3 = new ThreadedPatternCounter(sem,"C",2000,3000,pat); 
-        ThreadedPatternCounter mt4 = new ThreadedPatternCounter(sem, "D",3000,4000,pat);
-        ThreadedPatternCounter mt5 = new ThreadedPatternCounter(sem,"E",4000,5000,pat); 
         
-        mt1.start(); 
-        mt2.start(); 
-        mt3.start(); 
-        mt4.start(); 
-        mt5.start(); 
-
-        mt1.join(); 
-        mt2.join(); 
-        mt3.join();
-        mt4.join(); 
-        mt5.join(); 
-        while(mt1.isAlive()||mt2.isAlive()||mt3.isAlive()||mt4.isAlive()||mt5.isAlive()){
+        //THREADS
+        Semaphore sem = new Semaphore(1);
+        ArrayList <ThreadedPatternCounter> TA = new ArrayList();
+        ThreadedPatternCounter.setSheets(pat);
+        for (int i = 0;i<8;i++){
+            String name = "T"+i;
+            int start = (COUNT/THREADCOUNT )*i;
+            int end= (COUNT/THREADCOUNT )*(i+1);
+            TA.add(new ThreadedPatternCounter(sem,name,start,end));
+            TA.get(i).start();
+            TA.get(i).join();
             
         }
+        
+        while(checkAlive(TA)){
+            
+        }
+        long endTimeParallel = System.currentTimeMillis();
         PrintPatterns(ThreadedPatternCounter.pats);
-        System.out.println("test");
+        ExcelWriter.WritePatternToExel(ThreadedPatternCounter.pats);
+        
+        
+        long timeParallel = endTimeParallel-startTimeParallel;
+        System.out.println("Time in milliseconds:" + timeParallel);
+        
+        //System.out.println("test");
     }
     public static void PrintPatterns(ArrayList <Pattern> pats){
         int sum = 0;
@@ -72,5 +89,13 @@ public class PatternChecker {
         }
         System.out.println("TOTAL PATTERNS: "+pats.size());
         System.out.println("COUNT: "+sum);
+    }
+    public static Boolean checkAlive(ArrayList <ThreadedPatternCounter> TA){
+        for (int i=0;i<TA.size();i++){
+            if (TA.get(i).isAlive()){
+                return true;
+            }
+        }
+        return false;
     }
 }

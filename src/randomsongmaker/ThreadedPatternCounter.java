@@ -20,19 +20,20 @@ public class ThreadedPatternCounter extends Thread{
     public String threadName; 
     public int startRange;
     public int endRange;
-    public ArrayList <Sheet> sheets;
+    static public ArrayList <Sheet> sheets;
     static public ArrayList <Pattern> pats = new ArrayList();
-    public ThreadedPatternCounter(Semaphore sem, String threadName, int startRange, int endRange, ArrayList <Sheet> sheets)  
+    public ThreadedPatternCounter(Semaphore sem, String threadName, int startRange, int endRange)  
     { 
         super(threadName); 
         this.sem = sem; 
         this.threadName = threadName; 
         this.startRange = startRange;
         this.endRange = endRange;
-        this.sheets = sheets;
         //System.out.println("SETUP");
     }
-    
+    public static void setSheets(ArrayList <Sheet> sheets){
+        ThreadedPatternCounter.sheets = sheets;
+    }
     @Override
     public void run(){
         
