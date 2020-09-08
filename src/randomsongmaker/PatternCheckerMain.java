@@ -32,9 +32,12 @@ public class PatternCheckerMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException,InterruptedException {
+        
         int COUNT = 30000;
         int THREADCOUNT = 6;
-        int COUNTNOTE = 20000;
+        
+//        int COUNTNOTE = 20000;
+
         //WRITE DATA
         
         //ExcelWriter.WriteSheetToExel(COUNT,COUNTNOTE);
@@ -43,24 +46,23 @@ public class PatternCheckerMain {
         //-------------------------------------------------------------------------------------------------------
         //COUNTING PATTERNS
         
-        
-        /*
         //READ DATA 
         ExcelReader ex = new ExcelReader("data.xlsx");
         ArrayList <Sheet> pat = ex.ReadData();
         //long startTimeParallel = System.currentTimeMillis();
-        */
-
-        
-        /*
+       
         //NO THREADS PATTERN
+        System.out.println("Starting Serial Pattern Counter");
         long startTimeParallel = System.currentTimeMillis();
         NoThreadPatternCounter pc = new NoThreadPatternCounter();
         pc.manualCount(pat);
         long endTimeParallel = System.currentTimeMillis();
         PrintPatterns(pc.pats);
-        //ExcelWriter.WritePatternToExel(pc.pats);
-        */
+        //PATTERN TIME CHECK
+        long timeParallel = endTimeParallel-startTimeParallel;
+        System.out.println("Time in milliseconds:" + timeParallel);
+        ExcelWriter.WritePatternToExel(pc.pats);
+        
         
         
         
@@ -79,6 +81,7 @@ public class PatternCheckerMain {
             //TA.get(i).join();
             
         }
+        System.out.println("Starting Serial Pattern Counter");
         long startTimeParallel = System.currentTimeMillis();
         for (int i = 0;i<THREADCOUNT;i++){
             TA.get(i).start();
@@ -87,31 +90,33 @@ public class PatternCheckerMain {
         }
         long endTimeParallel = System.currentTimeMillis();
         PrintPatterns(ThreadedPatternCounter.pats);
-        //ExcelWriter.WritePatternToExel(ThreadedPatternCounter.pats);
-        */
-       
-        
-        
-        /*
         //PATTERN TIME CHECK
         long timeParallel = endTimeParallel-startTimeParallel;
         System.out.println("Time in milliseconds:" + timeParallel);
-        */
+        //ExcelWriter.WritePatternToExel(ThreadedPatternCounter.pats);
+       */ 
+       
+        
+        
+        
+
+        
         
         
         //-------------------------------------------------------------------------------------------------------
         //SORTING DATA
         
         //READ DATA PATTERNS
-        ExcelReader ex = new ExcelReader("patterns.xlsx");
-        ArrayList <Pattern> pat = ex.ReadPatterns();
+//        ExcelReader ex = new ExcelReader("patterns.xlsx");
+//        ArrayList <Pattern> pat = ex.ReadPatterns();
         //System.out.println(pat.size());
         
         
         
        
         /*
-        //MERGESORT PATTERNS
+        //MERGESORT SERIAL
+        System.out.println("Starting Serial Merge Sort");
         PatternMergeSort PMS = new PatternMergeSort(pat);
         long startTimeMS = System.currentTimeMillis();
         PMS.mergeSort(0, pat.size()-1);
@@ -131,34 +136,37 @@ public class PatternCheckerMain {
         */
         
         
-        
-        //MERGESORT PATTERNS PARRALLEL
+        /*
+        //MERGESORT PATTERNS PARALLEL
+        System.out.println("Starting Parallel Merge Sort");
         PatternParrallelMergeSort PPMS = new PatternParrallelMergeSort(pat);
         long startTimePMS = System.currentTimeMillis();
         PPMS.parallelmergeSort(0, pat.size()-1, 6);  
         long endTimePMS = System.currentTimeMillis();
         ArrayList <Pattern> ans = PPMS.getAns();
-        /*
-        int sum = 0;
-        for (int i =0; i<ans.size();i++){
-            System.out.println(ans.get(i).pattern+": "+ans.get(i).ctr);
-            sum+=ans.get(i).ctr;
-        }
-        System.out.println(sum);
-        */
+        
+        //Printed Check for the patterns if arranged
+//        int sum = 0;
+//        for (int i =0; i<ans.size();i++){
+//            System.out.println(ans.get(i).pattern+": "+ans.get(i).ctr);
+//            sum+=ans.get(i).ctr;
+//        }
+//        System.out.println(sum);
+        
         System.out.println(ans.size());
         long timePMS = endTimePMS-startTimePMS;
         System.out.println("Time in milliseconds:" + timePMS);
         //getAverageRuntime(PPMS.RCUs).printDetails();
+        */
         
         //-------------------------------------------------------------------------------------------------------
         //SEARCHING DATA
         
         //SETUP
         // ArrayList <Pattern> ans = 
-        String goal = "QQQQr";
+//        String goal = "QQQQr";
         
-        
+        /*
         //NO THREAD BINARY
         BinarySearchPattern BSP = new BinarySearchPattern(ans,goal);
         long startTimeBSP= System.currentTimeMillis();
@@ -166,7 +174,7 @@ public class PatternCheckerMain {
         long endTimeBSP = System.currentTimeMillis();
         long timeBSP = endTimeBSP-startTimeBSP;
         System.out.println("Time in milliseconds:" + timeBSP);
-        
+        */
         
         
         /*
@@ -180,12 +188,15 @@ public class PatternCheckerMain {
         System.out.println("Time in milliseconds:" + timeBSPT);
         */
         
+        /*
         //Answer
         if (x!=-1){
             System.out.println(goal+" is at index "+x+" with a count of "+ans.get(x).ctr);
         }else{
             System.out.println("Error");
         }
+        */
+        
     }
     public static void PrintPatterns(ArrayList <Pattern> pats){
         int sum = 0;
