@@ -149,7 +149,7 @@ public class PatternCheckerMain {
         System.out.println(ans.size());
         long timePMS = endTimePMS-startTimePMS;
         System.out.println("Time in milliseconds:" + timePMS);
-        
+        //getAverageRuntime(PPMS.RCUs).printDetails();
         
         //-------------------------------------------------------------------------------------------------------
         //SEARCHING DATA
@@ -205,12 +205,27 @@ public class PatternCheckerMain {
         return false;
     }
     public static RuntimeCPUUsage getAverageRuntime(ArrayList <RuntimeCPUUsage> RCUs){
+        if (RCUs.size() == 0){
+            System.out.println("No RCU added");
+            return new RuntimeCPUUsage();
+        }
+        
         long totalTotal = 0;
         long totalFree =0;
+        int deathCount = 0;
+   
         for(int i = 0;i<RCUs.size();i++){
+            try{
             totalTotal += RCUs.get(i).total;
             totalFree+= RCUs.get(i).free;
+            }catch(Exception Ex){
+                //System.out.println("DEATH at "+i);
+                deathCount++;
+            }
         }
-        return new RuntimeCPUUsage(totalTotal/RCUs.size(),totalFree/RCUs.size());
+        System.out.println("RCUs Full Size: "+ RCUs.size());
+        int acceptedSize = (RCUs.size()-deathCount);
+        System.out.println("RCUs Accepted: "+ acceptedSize);
+        return new RuntimeCPUUsage(totalTotal/acceptedSize,totalFree/acceptedSize);
     }
 }

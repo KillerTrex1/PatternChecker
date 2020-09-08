@@ -29,7 +29,6 @@ public class BinarySearchPattern {
             int mid = l + (r - l) / 2; 
 
             if (pats.get(mid).pattern.equals(goal)) {
-                System.out.println("found");
                 return mid; 
                 
             } 

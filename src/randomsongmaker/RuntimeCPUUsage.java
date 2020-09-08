@@ -43,6 +43,7 @@ public class RuntimeCPUUsage {
     }
     public void printDetails(){
         long usage  = total - free;
+        System.out.println("CPU USAGE DETAILS");
         System.out.println("Total Memory in MB:" + total);
         System.out.println("Memory used in MB: " + usage);
         System.out.println("Memory Free in MB: " + free);
