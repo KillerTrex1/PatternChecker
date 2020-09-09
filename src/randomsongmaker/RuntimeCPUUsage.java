@@ -44,10 +44,13 @@ public class RuntimeCPUUsage {
     public void printDetails(){
         long usage  = total - free;
         System.out.println("CPU USAGE DETAILS");
-        System.out.println("Total Memory in MB:" + total);
-        System.out.println("Memory used in MB: " + usage);
-        System.out.println("Memory Free in MB: " + free);
+        //System.out.println("Total Memory in MB:" + total);
+        //System.out.println("Memory used in MB: " + usage);
+        //System.out.println("Memory Free in MB: " + free);
         System.out.println("Percent Used: " + ((double)usage/(double)total)*100 + "%");
         System.out.println("Percent Free: " + ((double)free/(double)total)*100 + "%");
+    }
+    public double getUsePercent(){
+        return ((double)(total-free)/(double)total)*100;
     }
 }

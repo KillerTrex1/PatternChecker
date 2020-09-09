@@ -47,17 +47,11 @@ public class PatternMergeSort {
         int result = low;
          
         while((left <= middle) && (right<=high)){
-            //tpat.get(left).ctr
-            //tpat.get(left).ctr <= tpat.get(right).ctr
-            
-            
             if(CompareTools.isGreater(tpat.get(left).pattern, tpat.get(right).pattern)){
                 pat.set(result, tpat.get(left));
-                //nums[result] = tempArray[left];
                 left++;
             }else{
                 pat.set(result, tpat.get(right));
-                //nums[result] = tempArray[right];
                 right++;
             }
             result++;
@@ -65,14 +59,12 @@ public class PatternMergeSort {
          
         while (left <= middle){
             pat.set(result, tpat.get(left));
-            //nums[result] = tempArray[left];
             result++;
             left++;
         }
          
         while (right <= high){
             pat.set(result, tpat.get(right));
-            //nums[result] = tempArray[right];
             result++;
             right++;
         }
