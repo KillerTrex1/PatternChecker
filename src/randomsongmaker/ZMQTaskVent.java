@@ -32,24 +32,26 @@ public class ZMQTaskVent {
             System.out.println("Sending tasks to workers\n");
 
             //  The first message is "0" and signals start of batch
-            sink.send(Integer.toString(task), 0);
+            String sinkStarter = task +"/"+workers;
+            sink.send(sinkStarter, 0);
             int dataSize = 30000;
             if (task != 1){
                 dataSize = 105600;
             }
             for (int task_nbr = 0; task_nbr < workers; task_nbr++) {
                 int partition = dataSize/workers;
+                System.out.println(partition);
                 int l = partition*task_nbr;
                 int r = partition*(task_nbr+1);
                 if (r>dataSize){
                     r = dataSize;
                 }
-                
-                String instruction = l + "$" + r + "$"+ task;
+                System.out.println(task);
+                String instruction = l + "/" + r + "/"+ (task);
                 if (task == 3){
-                    instruction = instruction + "$"+ goal;
+                    instruction = instruction + "/"+ goal;
                 }
-                System.out.print(instruction);
+                System.out.println(instruction);
 
                 sender.send(instruction, 0);
             }

@@ -46,7 +46,7 @@ public class PatternCheckerMain {
 
         //-------------------------------------------------------------------------------------------------------
         //SORTING DATA
-        //startMSisThreaded(true);
+        //startMSisThreaded(false);
        
         //-------------------------------------------------------------------------------------------------------
         //SEARCHING DATA
@@ -182,6 +182,8 @@ public class PatternCheckerMain {
         PMS.mergeSort(0, pat.size()-1);
         long endTimeMS = System.currentTimeMillis();
         ArrayList <Pattern> ans = PMS.getAns();
+
+        
         /*
         int sum = 0;
         for (int i =0; i<ans.size();i++){
