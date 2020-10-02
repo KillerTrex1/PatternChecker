@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +34,7 @@ public class PatternCheckerMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException,InterruptedException {
+    public static void main(String[] args) throws IOException,InterruptedException, TimeoutException {
 
         //RuntimeCPUUsage rc = new RuntimeCPUUsage();
         //rc.printDetails();
@@ -41,19 +42,20 @@ public class PatternCheckerMain {
         //-------------------------------------------------------------------------------------------------------
         //COUNTING PATTERNS
         
-        //startPCisThreaded(true);
+        //startPCisThreaded(false);
 
         //-------------------------------------------------------------------------------------------------------
         //SORTING DATA
-        //startMSisThreaded(false);
+        //startMSisThreaded(true);
        
         //-------------------------------------------------------------------------------------------------------
         //SEARCHING DATA
         //String goal = "WW";
         //String goal = "QSrEHrS";
         //startBSisThreaded(true,goal);
-        
-        
+        //-------------------------------------------------------------------------------------------------------
+        //MQ
+        ZMQTaskSink sink = new ZMQTaskSink();
     }
     public static void PrintPatterns(ArrayList <Pattern> pats){
         int sum = 0;
@@ -63,6 +65,7 @@ public class PatternCheckerMain {
         }
         System.out.println("TOTAL PATTERNS: "+pats.size());
         System.out.println("COUNT: "+sum);
+        
     }
     public static Boolean checkAlive(ArrayList <ThreadedPatternCounter> TA){
         for (int i=0;i<TA.size();i++){
@@ -82,7 +85,7 @@ public class PatternCheckerMain {
         //long totalFree =0;
         double peakPercent = 0;
         int highIndex = 0;
-        int deathCount = 0;
+        //int deathCount = 0;
         for(int i = 0;i<RCUs.size();i++){
             try{
                 if (RCUs.get(i).getUsePercent()>peakPercent){
@@ -93,7 +96,7 @@ public class PatternCheckerMain {
             //totalFree+= RCUs.get(i).free;
             }catch(Exception Ex){
                 //System.out.println("DEATH at "+i);
-                deathCount++;
+                //deathCount++;
             }
         }
         //System.out.println("RCUs Full Size: "+ RCUs.size());
@@ -215,21 +218,21 @@ public class PatternCheckerMain {
         //ExcelWriter.WritePatternToExel(ans,"mergepatterns.xlsx");
     }
     static public void startBSisThreaded(Boolean isThread,String goal) throws IOException, InterruptedException{
-        ArrayList <Pattern> ans = BSPat();
+        ArrayList <Pattern> pat = BSPat();
         TimeUnit.SECONDS.sleep(10);
         if (isThread){
-            BST(ans,goal);
+            BST(pat,goal);
         }else{
-            BS(ans,goal);
+            BS(pat,goal);
         }
     }
     static public ArrayList <Pattern> BSPat() throws IOException{
         ExcelReader ex = new ExcelReader("mergepatterns.xlsx");
         return  ex.ReadPatterns();
     } 
-    static public void BS(ArrayList <Pattern> ans,String goal) throws IOException{
+    static public void BS(ArrayList <Pattern> pat,String goal) throws IOException{
 
-        BinarySearchPattern BSP = new BinarySearchPattern(ans,goal);
+        BinarySearchPattern BSP = new BinarySearchPattern(pat,goal);
         System.out.println("Starting Binary Search");
         //long startTimeBSP= System.currentTimeMillis();
         long startTimeBSPNano= System.nanoTime();

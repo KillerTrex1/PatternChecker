@@ -22,6 +22,9 @@ public class Pattern {
         pattern = name;
         ctr = 1;
     }
-    
+    public Pattern(String name,int val){
+        pattern = name;
+        ctr = val;
+    }
 
 }

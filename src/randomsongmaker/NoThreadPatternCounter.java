@@ -19,15 +19,23 @@ public class NoThreadPatternCounter {
         pats = new ArrayList();
     }
     public void manualCount(ArrayList<Sheet> Sheets){
+        //long startTimeParallel = System.currentTimeMillis();
+        
         for (int  i = 0; i<Sheets.size();i++){
             Sheet sheet = Sheets.get(i);
             for(int j =0 ;j<sheet.Patterns.size();j++){
                 checkPatterns(sheet.Patterns.get(j));
             }
+            /*
+            if(i%5000 == 0){
+                System.out.println(i+":"+(System.currentTimeMillis()-startTimeParallel));
+            }
+            */
         }
     }
     public void checkPatterns(String p){
         //RCUs.add(new RuntimeCPUUsage());
+        
         Boolean newP = true;
         for(int i = 0;i<pats.size();i++){
             if (pats.get(i).pattern.equals(p)){
@@ -38,6 +46,14 @@ public class NoThreadPatternCounter {
         }
         if (newP){
             pats.add(new Pattern(p));
+        }
+    }
+    public void manualCountWithRange(ArrayList<Sheet> Sheets, int start, int end){
+        for (int  i = start; i<end;i++){
+            Sheet sheet = Sheets.get(i);
+            for(int j =0 ;j<sheet.Patterns.size();j++){
+                checkPatterns(sheet.Patterns.get(j));
+            }
         }
     }
     
